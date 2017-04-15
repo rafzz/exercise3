@@ -28,8 +28,7 @@ public class ProductService extends RestClientBase {
 		super(serverHost, serverPort, client);
 	}
 
-	@Context
-	private Application application;
+	// private final WebTarget webtarget = baseTarget;
 
 	/**
 	 * Looks up all products of given types known to the server.
@@ -40,9 +39,10 @@ public class ProductService extends RestClientBase {
 	 */
 	public List<Product> retrieveProducts(Set<ProductType> types) {
 
-		Client client = ClientBuilder.newClient();
-		Response response = client.target("http://localhost:8091/products").queryParam("type", types.toArray())
+		Response response = baseTarget.path("/products").queryParam("type", types.toArray())
 				.request(MediaType.APPLICATION_JSON).get(Response.class);
+
+		
 		return response.readEntity(new GenericType<ArrayList<Product>>() {
 		});
 	}
@@ -54,9 +54,10 @@ public class ProductService extends RestClientBase {
 	 */
 	public List<Product> retrieveAllProducts() {
 
-		Client client = ClientBuilder.newClient();
-		Response response = client.target("http://localhost:8091/products").request(MediaType.APPLICATION_JSON)
+		
+		Response response = baseTarget.path("/products").request(MediaType.APPLICATION_JSON)
 				.get(Response.class);
+		
 		return response.readEntity(new GenericType<ArrayList<Product>>() {
 		});
 
@@ -73,8 +74,8 @@ public class ProductService extends RestClientBase {
 	 */
 	public Product retrieveProduct(int id) {
 
-		Client client = ClientBuilder.newClient();
-		Response response = client.target("http://localhost:8091/products/" + id).request(MediaType.APPLICATION_JSON)
+		
+		Response response = baseTarget.path("/products/" + id).request(MediaType.APPLICATION_JSON)
 				.get(Response.class);
 
 		if (response.getStatus() != Response.Status.OK.getStatusCode()) {
@@ -96,26 +97,27 @@ public class ProductService extends RestClientBase {
 
 	public int storeNewProduct(Product product) {
 
-		Client client = ClientBuilder.newClient();
-		Response response = client.target("http://localhost:8091/products")
-				.request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(product, MediaType.APPLICATION_JSON_TYPE), Response.class);
-				
-		if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-			response.close();
-			Response response2 = client.target("http://localhost:8091/products")
-					.queryParam("name", product.getName()).queryParam("type", product.getType())
-					.request(MediaType.APPLICATION_JSON)
-					.get(Response.class);
 
-			List<Product> products = response2.readEntity(new GenericType<ArrayList<Product>>() {});
+		Response response = baseTarget.path("/products").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(product, MediaType.APPLICATION_JSON_TYPE), Response.class);
+
+		if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+			/*
+			response.close();
+			Response response2 = baseTarget.path("/products").queryParam("name", product.getName())
+					.queryParam("type", product.getType()).request(MediaType.APPLICATION_JSON).get(Response.class);
+
+			List<Product> products = response2.readEntity(new GenericType<ArrayList<Product>>() {
+			});
 			return products.get(products.size() - 1).getId();
-			
+			*/
+			//nie wiem czemu to nie chce dzia³ac
+			return response.readEntity(Product.class).getId();
+
 		} else {
 			throw new WebApplicationException();
 		}
 
-		
 	}
 
 	/**
@@ -128,12 +130,12 @@ public class ProductService extends RestClientBase {
 	 *             if no product found for the given ID.
 	 */
 	public void updateProduct(Product product) {
-		Client client = ClientBuilder.newClient();
 		
-		Response response = client.target("http://localhost:8091/products/"+product.getId())
+
+		Response response = baseTarget.path("/products/" + product.getId())
 				.request(MediaType.APPLICATION_JSON)
 				.put(Entity.entity(product, MediaType.APPLICATION_JSON_TYPE), Response.class);
-		
+
 		if (response.getStatus() != Response.Status.NO_CONTENT.getStatusCode()) {
 			throw new NotFoundException();
 		}
@@ -149,6 +151,15 @@ public class ProductService extends RestClientBase {
 	 *             if no product found for the given ID.
 	 */
 	public void deleteProduct(Product product) {
-		// TODO
+
+		Response response = baseTarget.path("/products/" + product.getId())
+				.request(MediaType.APPLICATION_JSON )
+				.delete(Response.class);
+		
+		if(response.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
+		{
+			throw new NotFoundException();
+		}
+		
 	}
 }
