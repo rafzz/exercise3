@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Date;
 
 
 /**
@@ -38,20 +38,20 @@ public class HolidayType {
 
     @XmlElement(name = "StartDate", required = true)
     @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar startDate;
+    protected Date startDate;
     @XmlElement(name = "EndDate", required = true)
     @XmlSchemaType(name = "date")
-    protected XMLGregorianCalendar endDate;
+    protected Date endDate;
 
     /**
      * Gets the value of the startDate property.
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
-    public XMLGregorianCalendar getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
@@ -60,10 +60,10 @@ public class HolidayType {
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
-    public void setStartDate(XMLGregorianCalendar value) {
+    public void setStartDate(Date value) {
         this.startDate = value;
     }
 
@@ -72,10 +72,10 @@ public class HolidayType {
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
-    public XMLGregorianCalendar getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
@@ -84,10 +84,10 @@ public class HolidayType {
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
-    public void setEndDate(XMLGregorianCalendar value) {
+    public void setEndDate(Date value) {
         this.endDate = value;
     }
 
