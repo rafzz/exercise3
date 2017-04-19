@@ -3,6 +3,8 @@ package wdsr.exercise3.hr;
 import java.net.URL;
 import java.util.Date;
 
+import wdsr.exercise3.hr.ws.HumanResourceService;
+
 // TODO Complete this class to book holidays by issuing a request to Human Resource web service.
 // In order to see definition of the Human Resource web service:
 // 1. Run HolidayServerApp.
@@ -12,8 +14,10 @@ public class HolidayClient {
 	 * Creates this object
 	 * @param wsdlLocation URL of the Human Resource web service WSDL
 	 */
+	private HumanResourceService hrs;
+	
 	public HolidayClient(URL wsdlLocation) {
-		// TODO
+		hrs = new HumanResourceService(wsdlLocation);
 	}
 	
 	/**
